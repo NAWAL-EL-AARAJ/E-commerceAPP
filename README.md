@@ -6,7 +6,7 @@ Site e-commerce pour MERHAS, avec catalogue public (sans compte requis) et espac
 
 ## Démo en ligne
 
-🔗 **[https://VOTRE-LIEN-VERCEL.vercel.app](https://VOTRE-LIEN-VERCEL.vercel.app)**
+🔗 **e-commerce-app-theta-azure.vercel.app**
 
 ## Fonctionnalités
 
