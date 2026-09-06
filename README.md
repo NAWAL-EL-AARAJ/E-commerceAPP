@@ -1,6 +1,12 @@
 # MERHAS — Site web de vente de foulards
 
+[![Deployed on Vercel](https://img.shields.io/badge/deployed%20on-Vercel-black?logo=vercel)](https://VOTRE-LIEN-VERCEL.vercel.app)
+
 Site e-commerce pour MERHAS, avec catalogue public (sans compte requis) et espace admin pour la gestion des produits et des commandes.
+
+## Démo en ligne
+
+🔗 **[https://VOTRE-LIEN-VERCEL.vercel.app](https://VOTRE-LIEN-VERCEL.vercel.app)**
 
 ## Fonctionnalités
 
@@ -16,7 +22,6 @@ Site e-commerce pour MERHAS, avec catalogue public (sans compte requis) et espac
 - Suivi des commandes reçues avec changement de statut (en attente, confirmée, livrée, annulée)
 
 ## Stack technique
-
 - **Framework** : [Next.js](https://nextjs.org/) (App Router)
 - **Base de données & authentification** : [Supabase](https://supabase.com/)
 - **Stockage des images** : Supabase Storage
@@ -24,7 +29,6 @@ Site e-commerce pour MERHAS, avec catalogue public (sans compte requis) et espac
 - **Hébergement** : [Vercel](https://vercel.com/)
 
 ## Structure du projet
-
 ```
 merhas-site/
 ├── app/
@@ -48,40 +52,32 @@ merhas-site/
 ```
 
 ## Installation en local
-
 1. Cloner le dépôt :
    ```bash
    git clone https://github.com/NAWAL-EL-AARAJ/E-commerceAPP.git
    cd E-commerceAPP
    ```
-
 2. Installer les dépendances :
    ```bash
    npm install
    ```
-
 3. Créer un fichier `.env.local` à la racine avec les clés Supabase :
    ```
    NEXT_PUBLIC_SUPABASE_URL=votre_url_supabase
    NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_cle_publique_supabase
    ```
-
 4. Lancer le serveur de développement :
    ```bash
    npm run dev
    ```
-
 5. Ouvrir [http://localhost:3000](http://localhost:3000)
 
 ## Base de données
-
 Le projet utilise deux tables principales dans Supabase :
-
 - **produits** : nom, description, prix, image_url, stock, catégorie
 - **commandes** : nom_client, téléphone, adresse, produits (JSON), total, statut
 
 La sécurité est gérée via Row Level Security (RLS) : lecture publique du catalogue, écriture réservée aux utilisateurs authentifiés (admin).
 
 ## Auteure
-
 Nawal El Aaraj — projet développé pour MERHAS.
