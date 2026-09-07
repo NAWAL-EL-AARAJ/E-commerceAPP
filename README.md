@@ -63,8 +63,8 @@ merhas-site/
    ```
 3. Créer un fichier `.env.local` à la racine avec les clés Supabase :
    ```
-   NEXT_PUBLIC_SUPABASE_URL=votre_url_supabase
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_cle_publique_supabase
+NEXT_PUBLIC_SUPABASE_URL=https://nevanxhdyuxdtejuhztf.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_yX10p6yNFlyZc0QoYMHG8w_VGxbDhaJ
    ```
 4. Lancer le serveur de développement :
    ```bash
