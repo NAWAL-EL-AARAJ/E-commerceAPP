@@ -1,17 +1,73 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Fraunces", serif;
-  --font-body: "Karla", sans-serif;
+  /* Typographie */
+  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-script), "Brush Script MT", cursive;
 
-  --color-ivory: #FBF7F0;
-  --color-ink: #2B2420;
-  --color-majorelle: #3B4F9C;
-  --color-ochre: #C08A2E;
-  --color-line: #E4DCCB;
+  /* Palette MERHAS */
+  --color-cream: #f7f1e9;
+  --color-sand: #efe4d6;
+  --color-blush: #ebdad2;
+  --color-rose: #d8b4a8;
+  --color-mauve: #a9808a;
+  --color-rosewood: #a25e56;
+  --color-rosewood-dark: #8a4a43;
+  --color-espresso: #3b302b;
+  --color-taupe: #8b7a6e;
+  --color-line: #e4d6c6;
+
+  /* Alias de compatibilité (ancien code) */
+  --color-ivory: #f7f1e9;
+  --color-ink: #3b302b;
 }
 
-body {
-  background-color: var(--color-ivory);
-  color: var(--color-ink);
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-espresso);
+    font-family: var(--font-body);
+  }
+
+  ::selection {
+    background-color: var(--color-rose);
+    color: var(--color-espresso);
+  }
+}
+
+@layer utilities {
+  /* Label capitale espacée (eyebrow) */
+  .eyebrow {
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--color-taupe);
+  }
+
+  .font-script {
+    font-family: var(--font-script);
+  }
+}
+
+@keyframes merhas-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade {
+  animation: merhas-fade 0.7s ease both;
 }
