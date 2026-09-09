@@ -55,20 +55,20 @@ export default function AProposPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-4">
             <Photo
-              src="/images/apropos/apropos-1.jpg"
-              alt="Atelier MERHAS"
-              width={500}
-              height={640}
+              src="/images/apropos/image1.png"
+              alt="Cliente MERHAS"
+              width={900}
+              height={1100}
               className="aspect-[4/5] w-full rounded-sm object-cover"
             />
             <Photo
-              src="/images/apropos/apropos-2.jpg"
-              alt="Foulards MERHAS"
-              width={500}
-              height={640}
-              className="mt-8 aspect-[4/5] w-full rounded-sm object-cover"
+              src="/images/apropos/image2.png"
+              alt="Coffret et collection MERHAS"
+              width={1200}
+              height={800}
+              className="aspect-[3/2] w-full rounded-sm object-cover"
             />
           </div>
         </Container>

@@ -40,8 +40,9 @@ export default function Hero() {
               priority={i === 0}
               sizes="100vw"
               className="object-cover"
+              style={{ objectPosition: slide.position ?? "center" }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-cream/85 via-cream/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/55 to-cream/10" />
           </div>
         ))}
 

@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { NAV_LINKS, SITE } from "../../lib/content";
+import { NAV_LINKS } from "../../lib/content";
 import { CloseIcon } from "../icons";
+import Logo from "../ui/Logo";
 
 export default function MobileMenu({
   open,
@@ -44,9 +45,7 @@ export default function MobileMenu({
         }`}
       >
         <div className="flex items-center justify-between">
-          <span className="font-display text-xl tracking-[0.3em] text-espresso">
-            {SITE.nom}
-          </span>
+          <Logo size={38} />
           <button aria-label="Fermer le menu" onClick={onClose} className="p-1">
             <CloseIcon width={22} height={22} />
           </button>

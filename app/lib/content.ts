@@ -13,6 +13,8 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
+export const LOGO = "/images/logo-merhas.png";
+
 export const SITE = {
   nom: "MERHAS",
   baseline: "More than just a scarf.",
@@ -22,7 +24,7 @@ export const SITE = {
   ville: "Casablanca, Maroc",
   horaires: "Du lundi au samedi · 9h – 19h",
   reseaux: {
-    instagram: "https://instagram.com/merhas",
+    instagram: "https://www.instagram.com/merhas.official",
     tiktok: "https://tiktok.com/@merhas",
     pinterest: "https://pinterest.com/merhas",
   },
@@ -36,24 +38,17 @@ export const HERO_SLIDES: HeroSlide[] = [
     texte:
       "Des foulards pensés pour sublimer chaque moment de ta vie, avec style et modestie.",
     image: "/images/hero/hero-1.jpg",
+    position: "right",
     cta: { label: "Découvrir la boutique", href: "/boutique" },
-  },
-  {
-    eyebrow: "Nouvelle collection",
-    titre: "Des matières",
-    titreItalique: "qui respirent",
-    texte:
-      "Une sélection de tissus fluides et légers, parfaits en toute saison.",
-    image: "/images/hero/hero-2.jpg",
-    cta: { label: "Voir les nouveautés", href: "/boutique" },
   },
   {
     eyebrow: "Fait avec soin",
     titre: "Une palette",
-    titreItalique: "pour chaque style",
+    titreItalique: "pour chaque couleur",
     texte:
       "Du blanc poudré au chocolat profond, trouve la teinte qui te ressemble.",
-    image: "/images/hero/hero-3.jpg",
+    image: "/images/hero/hero-2.jpg",
+    position: "right",
     cta: { label: "Toutes les couleurs", href: "/boutique" },
   },
 ];
@@ -104,13 +99,6 @@ export const UNIVERS = {
   video: "/images/univers/video.mp4",
   imageScript: "/images/univers/script.jpg",
   script: "Plus qu'un foulard, une touche d'élégance",
-};
-
-export const NEWSLETTER = {
-  titre: "Rejoins notre univers",
-  texte:
-    "Sois la première à découvrir nos nouveautés et nos offres exclusives.",
-  background: "/images/footer-bg.jpg",
 };
 
 /** Correspondance nom de couleur → code hex, pour les pastilles produit. */

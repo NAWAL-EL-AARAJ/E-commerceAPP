@@ -38,6 +38,8 @@ export interface HeroSlide {
   titreItalique: string;
   texte: string;
   image: string;
+  /** Cadrage de l'image (CSS object-position), défaut "center". */
+  position?: string;
   cta: { label: string; href: string };
 }
 

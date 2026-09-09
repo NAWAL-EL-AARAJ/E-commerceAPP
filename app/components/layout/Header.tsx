@@ -14,6 +14,7 @@ import {
   UserIcon,
 } from "../icons";
 import MobileMenu from "./MobileMenu";
+import Logo from "../ui/Logo";
 
 export default function Header() {
   const pathname = usePathname();
@@ -70,15 +71,8 @@ export default function Header() {
         </nav>
 
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex flex-col items-center gap-0.5 text-center"
-          aria-label={SITE.nom}
-        >
-          <span className="text-rosewood text-lg leading-none">&#10047;</span>
-          <span className="font-display text-2xl tracking-[0.35em] text-espresso">
-            {SITE.nom}
-          </span>
+        <Link href="/" aria-label={SITE.nom} className="shrink-0">
+          <Logo size={50} priority />
         </Link>
 
         {/* Actions droite */}
