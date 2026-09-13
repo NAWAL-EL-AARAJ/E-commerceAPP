@@ -41,7 +41,7 @@ export default function Header() {
           : "border-transparent bg-cream"
       }`}
     >
-      <div className="mx-auto flex h-20 w-full max-w-[1180px] items-center justify-between px-5 sm:px-8">
+      <div className="mx-auto flex h-24 w-full max-w-[1180px] items-center justify-between px-5 sm:px-8">
         {/* Gauche : burger (mobile) */}
         <div className="flex flex-1 items-center md:hidden">
           <button
@@ -72,7 +72,7 @@ export default function Header() {
 
         {/* Logo */}
         <Link href="/" aria-label={SITE.nom} className="shrink-0">
-          <Logo size={50} priority />
+          <Logo size={62} priority />
         </Link>
 
         {/* Actions droite */}

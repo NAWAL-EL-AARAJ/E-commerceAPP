@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { ArrowRightIcon } from "../icons";
 
-type Variant = "solid" | "outline" | "ghost";
+type Variant = "solid" | "outline" | "ghost" | "invert";
 type Size = "md" | "lg";
 
 const sizes: Record<Size, string> = {
@@ -16,6 +16,9 @@ const variants: Record<Variant, string> = {
   outline:
     "border border-espresso/25 text-espresso hover:border-espresso hover:bg-espresso hover:text-cream",
   ghost: "text-espresso hover:text-rosewood",
+  /** Bouton clair, pour un fond foncé (bannières). */
+  invert:
+    "bg-cream text-espresso hover:bg-cream/90 border border-cream hover:border-cream/90",
 };
 
 const baseClass =

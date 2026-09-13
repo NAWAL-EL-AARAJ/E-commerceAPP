@@ -10,7 +10,6 @@ export const NAV_LINKS: NavLink[] = [
   { label: "Accueil", href: "/" },
   { label: "Boutique", href: "/boutique" },
   { label: "À propos", href: "/a-propos" },
-  { label: "Contact", href: "/contact" },
 ];
 
 export const LOGO = "/images/logo-merhas.png";
@@ -19,14 +18,15 @@ export const SITE = {
   nom: "MERHAS",
   baseline: "More than just a scarf.",
   email: "contact@merhas.ma",
-  telephone: "+212 6 00 00 00 00",
-  whatsapp: "+212600000000",
+  telephone: "+212 7 08 74 21 20",
+  whatsapp: "+212708742120",
   ville: "Casablanca, Maroc",
   horaires: "Du lundi au samedi · 9h – 19h",
   reseaux: {
     instagram: "https://www.instagram.com/merhas.official",
-    tiktok: "https://tiktok.com/@merhas",
+    tiktok: "https://www.tiktok.com/@merhas.official",
     pinterest: "https://pinterest.com/merhas",
+    whatsapp: "https://wa.me/212708742120",
   },
 };
 
@@ -94,10 +94,8 @@ export const UNIVERS = {
   texte:
     "Chez MERHAS, chaque pièce est pensée pour révéler ta beauté naturelle, avec simplicité et raffinement.",
   cta: { label: "En savoir plus", href: "/a-propos" },
-  imageBox: "/images/univers/box.jpg",
-  videoPoster: "/images/univers/video-poster.jpg",
-  video: "/images/univers/video.mp4",
-  imageScript: "/images/univers/script.jpg",
+  imageBox: "/images/apropos/image4.png",
+  imageScript: "/images/apropos/image3.png",
   script: "Plus qu'un foulard, une touche d'élégance",
 };
 

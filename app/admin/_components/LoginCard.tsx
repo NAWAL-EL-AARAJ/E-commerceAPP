@@ -2,75 +2,44 @@
 
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { colors, fontBody, fontDisplay, inputStyle } from "./theme";
+import Logo from "../../components/ui/Logo";
+import { Button, FIELD } from "./ui";
 
 export default function LoginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [erreur, setErreur] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    setErrorMsg("");
+    setErreur("");
+    setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    if (error) setErrorMsg("Email ou mot de passe incorrect");
+    setLoading(false);
+    if (error) setErreur("Email ou mot de passe incorrect.");
   }
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: colors.bg,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "380px",
-          background: colors.surface,
-          border: `1px solid ${colors.border}`,
-          borderRadius: "10px",
-          padding: "36px 32px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: fontBody,
-            fontSize: "13px",
-            color: colors.inkMuted,
-            margin: "0 0 4px",
-          }}
-        >
-          Espace administration
-        </p>
-        <h1
-          style={{
-            fontFamily: fontDisplay,
-            fontSize: "30px",
-            fontWeight: 600,
-            color: colors.ink,
-            margin: "0 0 28px",
-          }}
-        >
-          MERHAS
-        </h1>
-        <form
-          onSubmit={handleLogin}
-          style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-        >
+    <main className="grid min-h-screen place-items-center bg-cream px-4">
+      <div className="w-full max-w-sm rounded-2xl border border-line bg-white p-8">
+        <div className="flex flex-col items-center text-center">
+          <Logo size={68} priority />
+          <p className="mt-4 text-xs uppercase tracking-[0.22em] text-taupe">
+            Espace administration
+          </p>
+        </div>
+
+        <form onSubmit={handleLogin} className="mt-8 flex flex-col gap-3">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            style={inputStyle}
+            className={FIELD}
             required
           />
           <input
@@ -78,40 +47,13 @@ export default function LoginCard() {
             placeholder="Mot de passe"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={inputStyle}
+            className={FIELD}
             required
           />
-          <button
-            type="submit"
-            className="merhas-btn-primary"
-            style={{
-              padding: "12px",
-              background: colors.plum,
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontFamily: fontBody,
-              fontWeight: 600,
-              fontSize: "14px",
-              marginTop: "4px",
-              transition: "background 0.15s",
-            }}
-          >
-            Se connecter
-          </button>
-          {errorMsg && (
-            <p
-              style={{
-                color: colors.rust,
-                fontSize: "13px",
-                fontFamily: fontBody,
-                margin: 0,
-              }}
-            >
-              {errorMsg}
-            </p>
-          )}
+          <Button type="submit" disabled={loading} className="mt-1 w-full">
+            {loading ? "Connexion…" : "Se connecter"}
+          </Button>
+          {erreur && <p className="text-sm text-rosewood">{erreur}</p>}
         </form>
       </div>
     </main>

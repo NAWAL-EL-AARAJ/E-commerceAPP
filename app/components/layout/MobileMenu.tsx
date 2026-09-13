@@ -45,7 +45,7 @@ export default function MobileMenu({
         }`}
       >
         <div className="flex items-center justify-between">
-          <Logo size={38} />
+          <Logo size={46} />
           <button aria-label="Fermer le menu" onClick={onClose} className="p-1">
             <CloseIcon width={22} height={22} />
           </button>

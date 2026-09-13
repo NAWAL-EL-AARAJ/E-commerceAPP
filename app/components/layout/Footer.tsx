@@ -1,14 +1,19 @@
 import Link from "next/link";
 import { NAV_LINKS, SITE } from "../../lib/content";
-import { InstagramIcon, PinterestIcon, TiktokIcon } from "../icons";
+import {
+  InstagramIcon,
+  PinterestIcon,
+  TiktokIcon,
+  WhatsappIcon,
+} from "../icons";
 import Logo from "../ui/Logo";
 
 export default function Footer() {
   return (
     <footer className="mt-24 bg-espresso text-cream/80">
-      <div className="mx-auto grid w-full max-w-[1180px] gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="mx-auto grid w-full max-w-[1180px] gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1.5fr_1fr]">
         <div>
-          <Logo size={64} />
+          <Logo size={76} />
           <p className="mt-4 max-w-xs text-sm text-cream/70">{SITE.baseline}</p>
           <div className="mt-5 flex gap-4">
             <a
@@ -28,6 +33,15 @@ export default function Footer() {
               className="hover:text-cream"
             >
               <TiktokIcon />
+            </a>
+            <a
+              href={SITE.reseaux.whatsapp}
+              aria-label="WhatsApp"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-cream"
+            >
+              <WhatsappIcon />
             </a>
             <a
               href={SITE.reseaux.pinterest}
@@ -56,20 +70,6 @@ export default function Footer() {
                 Favoris
               </Link>
             </li>
-          </ul>
-        </div>
-
-        <div>
-          <p className="eyebrow !text-cream/50 mb-4">Contact</p>
-          <ul className="space-y-2 text-sm text-cream/70">
-            <li>{SITE.ville}</li>
-            <li>
-              <a href={`mailto:${SITE.email}`} className="hover:text-cream">
-                {SITE.email}
-              </a>
-            </li>
-            <li>{SITE.telephone}</li>
-            <li>{SITE.horaires}</li>
           </ul>
         </div>
       </div>

@@ -17,44 +17,51 @@ export default function ProduitPhare() {
   return (
     <section className="py-20 sm:py-28">
       <Container>
-        <div className="grid items-center gap-10 rounded-sm bg-blush/50 p-6 sm:p-10 lg:grid-cols-[1fr_1.5fr] lg:gap-14">
-          <div>
-            <p className="eyebrow mb-4">{PRODUIT_PHARE.eyebrow}</p>
-            <h2 className="font-display text-4xl italic leading-tight text-espresso sm:text-5xl">
-              {PRODUIT_PHARE.titreItalique}
-            </h2>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-taupe">
-              {PRODUIT_PHARE.texte}
-            </p>
-
-            <div className="mt-6 flex items-center gap-1.5">
-              {PALETTE.map((c) => (
-                <span
-                  key={c}
-                  className="h-5 w-5 rounded-full ring-1 ring-espresso/10"
-                  style={{ backgroundColor: c }}
-                />
-              ))}
+        <div className="overflow-hidden rounded-sm bg-blush/50">
+          <div className="flex flex-col gap-8 p-6 sm:p-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-md">
+              <p className="eyebrow mb-4">{PRODUIT_PHARE.eyebrow}</p>
+              <h2 className="font-display text-4xl italic leading-tight text-espresso sm:text-5xl">
+                {PRODUIT_PHARE.titreItalique}
+              </h2>
+              <p className="mt-4 text-sm leading-relaxed text-taupe">
+                {PRODUIT_PHARE.texte}
+              </p>
+              <div className="mt-7">
+                <ButtonLink href={PRODUIT_PHARE.cta.href} variant="solid">
+                  {PRODUIT_PHARE.cta.label}
+                </ButtonLink>
+              </div>
             </div>
-            <p className="mt-3 max-w-[13rem] font-script text-xl leading-tight text-mauve">
-              {PRODUIT_PHARE.paletteTexte}
-            </p>
 
-            <div className="mt-7">
-              <ButtonLink href={PRODUIT_PHARE.cta.href} variant="solid">
-                {PRODUIT_PHARE.cta.label}
-              </ButtonLink>
+            <div className="flex items-center gap-4 lg:flex-col lg:items-end lg:gap-3">
+              <div className="flex gap-1.5">
+                {PALETTE.map((c) => (
+                  <span
+                    key={c}
+                    className="h-5 w-5 rounded-full ring-1 ring-espresso/10"
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+              </div>
+              <p className="max-w-[13rem] font-script text-xl leading-tight text-mauve lg:text-right">
+                {PRODUIT_PHARE.paletteTexte}
+              </p>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-sm">
+          {/* Bannière collée au reste de la carte (pas de marge autour) : la
+              photo prolonge la carte au lieu de flotter dedans comme un
+              rectangle rapporté. Léger fondu en haut pour adoucir la jonction. */}
+          <div className="relative">
             <Photo
               src={PRODUIT_PHARE.image}
               alt={PRODUIT_PHARE.nom}
-              width={1200}
-              height={700}
-              className="aspect-[16/10] w-full object-cover"
+              width={1600}
+              height={800}
+              className="aspect-[2/1] w-full object-cover object-center [filter:saturate(0.94)_sepia(0.05)]"
             />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-blush/60 to-transparent" />
           </div>
         </div>
       </Container>

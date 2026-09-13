@@ -4,15 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
 import { supabase } from "../../lib/supabase";
-import { prixFormate } from "../../lib/content";
+import { prixFormate, PLACEHOLDER_PRODUIT } from "../../lib/content";
 import Container from "../../components/ui/Container";
+import Photo from "../../components/ui/Photo";
 import { Button, ButtonLink } from "../../components/ui/Button";
 
 const champ =
   "w-full border border-line bg-cream px-4 py-3 text-sm text-espresso placeholder:text-taupe/70 focus:border-rosewood focus:outline-none";
 
 export default function CommandePage() {
-  const { cart, total, clearCart } = useCart();
+  const { cart, total, clearCart, updateQuantite, removeFromCart } = useCart();
 
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
@@ -123,23 +124,79 @@ export default function CommandePage() {
         </div>
 
         <aside className="h-fit rounded-sm bg-blush/50 p-6">
-          <p className="eyebrow mb-4">Récapitulatif</p>
-          <ul className="divide-y divide-line">
+          <div className="flex items-baseline justify-between">
+            <p className="eyebrow">Récapitulatif</p>
+            <Link
+              href="/boutique"
+              className="text-xs uppercase tracking-[0.15em] text-taupe hover:text-espresso"
+            >
+              + Ajouter
+            </Link>
+          </div>
+
+          <ul className="mt-4 divide-y divide-line">
             {cart.map((item) => (
-              <li
-                key={item.id}
-                className="flex justify-between gap-3 py-3 text-sm"
-              >
-                <span className="text-espresso">
-                  {item.nom}{" "}
-                  <span className="text-taupe">× {item.quantite}</span>
-                </span>
-                <span className="text-taupe">
-                  {prixFormate(item.prix * item.quantite)}
-                </span>
+              <li key={item.id} className="flex gap-3 py-4">
+                <Link
+                  href={`/boutique/${item.id}`}
+                  className="shrink-0 overflow-hidden rounded-sm bg-sand"
+                >
+                  <Photo
+                    src={item.image_url || PLACEHOLDER_PRODUIT}
+                    alt={item.nom}
+                    width={64}
+                    height={76}
+                    className="h-[76px] w-16 object-cover"
+                  />
+                </Link>
+
+                <div className="flex flex-1 flex-col">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-sm text-espresso">{item.nom}</span>
+                    <span className="shrink-0 text-sm text-espresso">
+                      {prixFormate(item.prix * item.quantite)}
+                    </span>
+                  </div>
+
+                  <div className="mt-auto flex items-center justify-between pt-2">
+                    <div className="flex items-center border border-line bg-cream">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateQuantite(item.id, item.quantite - 1)
+                        }
+                        className="flex h-7 w-7 items-center justify-center text-espresso hover:bg-blush/60"
+                        aria-label="Diminuer la quantité"
+                      >
+                        −
+                      </button>
+                      <span className="w-7 text-center text-xs">
+                        {item.quantite}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          updateQuantite(item.id, item.quantite + 1)
+                        }
+                        className="flex h-7 w-7 items-center justify-center text-espresso hover:bg-blush/60"
+                        aria-label="Augmenter la quantité"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-xs uppercase tracking-[0.13em] text-taupe hover:text-rosewood"
+                    >
+                      Retirer
+                    </button>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>
+
           <div className="mt-4 flex items-baseline justify-between border-t border-line pt-4">
             <span className="eyebrow">Total</span>
             <span className="font-display text-2xl text-rosewood">
