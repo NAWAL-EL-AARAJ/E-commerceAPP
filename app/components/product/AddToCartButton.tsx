@@ -13,12 +13,15 @@ export default function AddToCartButton({
   variant?: "line" | "solid";
   quantite?: number;
 }) {
-  const { addToCart } = useCart();
+  const { cart, addToCart } = useCart();
   const [ajoute, setAjoute] = useState(false);
+
+  const dejaAuPanier = cart.find((item) => item.id === produit.id)?.quantite ?? 0;
   const rupture = produit.stock === 0;
+  const maxAtteint = !rupture && produit.stock != null && dejaAuPanier >= produit.stock;
 
   function handle() {
-    if (rupture) return;
+    if (rupture || maxAtteint) return;
     addToCart(produit, quantite);
     setAjoute(true);
     setTimeout(() => setAjoute(false), 1600);
@@ -32,14 +35,16 @@ export default function AddToCartButton({
   return (
     <button
       onClick={handle}
-      disabled={rupture}
+      disabled={rupture || maxAtteint}
       className={`w-full rounded-full px-6 py-3 text-[0.7rem] uppercase tracking-[0.2em] transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-50 ${styles}`}
     >
       {rupture
         ? "Rupture de stock"
-        : ajoute
-          ? "Ajouté ✦"
-          : "Ajouter au panier"}
+        : maxAtteint
+          ? "Stock maximum atteint"
+          : ajoute
+            ? "Ajouté ✦"
+            : "Ajouter au panier"}
     </button>
   );
 }

@@ -135,7 +135,10 @@ export default function CommandePage() {
           </div>
 
           <ul className="mt-4 divide-y divide-line">
-            {cart.map((item) => (
+            {cart.map((item) => {
+              const maxAtteint =
+                item.stock != null && item.quantite >= item.stock;
+              return (
               <li key={item.id} className="flex gap-3 py-4">
                 <Link
                   href={`/boutique/${item.id}`}
@@ -178,7 +181,8 @@ export default function CommandePage() {
                         onClick={() =>
                           updateQuantite(item.id, item.quantite + 1)
                         }
-                        className="flex h-7 w-7 items-center justify-center text-espresso hover:bg-blush/60"
+                        disabled={maxAtteint}
+                        className="flex h-7 w-7 items-center justify-center text-espresso hover:bg-blush/60 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
                         aria-label="Augmenter la quantité"
                       >
                         +
@@ -192,9 +196,15 @@ export default function CommandePage() {
                       Retirer
                     </button>
                   </div>
+                  {maxAtteint && (
+                    <p className="mt-1 text-[0.7rem] text-taupe">
+                      Stock maximum atteint.
+                    </p>
+                  )}
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
 
           <div className="mt-4 flex items-baseline justify-between border-t border-line pt-4">

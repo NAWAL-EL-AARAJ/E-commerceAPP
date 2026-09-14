@@ -35,8 +35,11 @@ export default function PanierPage() {
         <h1 className="font-display text-4xl text-espresso">Mon panier</h1>
 
         <ul className="mt-10 divide-y divide-line border-y border-line">
-          {cart.map((item) => (
-            <li key={item.id} className="flex gap-4 py-6">
+          {cart.map((item) => {
+            const maxAtteint =
+              item.stock != null && item.quantite >= item.stock;
+            return (
+              <li key={item.id} className="flex gap-4 py-6">
               <Link
                 href={`/boutique/${item.id}`}
                 className="shrink-0 overflow-hidden rounded-sm bg-sand"
@@ -81,7 +84,8 @@ export default function PanierPage() {
                     </span>
                     <button
                       onClick={() => updateQuantite(item.id, item.quantite + 1)}
-                      className="flex h-9 w-9 items-center justify-center text-espresso hover:bg-blush/50"
+                      disabled={maxAtteint}
+                      className="flex h-9 w-9 items-center justify-center text-espresso hover:bg-blush/50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
                       aria-label="Augmenter"
                     >
                       +
@@ -94,9 +98,15 @@ export default function PanierPage() {
                     Retirer
                   </button>
                 </div>
+                {maxAtteint && (
+                  <p className="mt-1.5 text-xs text-taupe">
+                    Stock maximum atteint pour cet article.
+                  </p>
+                )}
               </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
 
         <div className="mt-8 flex items-baseline justify-between">

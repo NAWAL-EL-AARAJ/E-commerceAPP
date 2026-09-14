@@ -39,7 +39,10 @@ export default function CartBar() {
             </div>
 
             <ul className="divide-y divide-line px-5">
-              {cart.map((item) => (
+              {cart.map((item) => {
+                const maxAtteint =
+                  item.stock != null && item.quantite >= item.stock;
+                return (
                 <li key={item.id} className="flex gap-3 py-4">
                   <Photo
                     src={item.image_url || PLACEHOLDER_PRODUIT}
@@ -75,7 +78,8 @@ export default function CartBar() {
                           onClick={() =>
                             updateQuantite(item.id, item.quantite + 1)
                           }
-                          className="flex h-7 w-7 items-center justify-center text-espresso hover:bg-blush/60"
+                          disabled={maxAtteint}
+                          className="flex h-7 w-7 items-center justify-center text-espresso hover:bg-blush/60 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
                           aria-label="Augmenter la quantité"
                         >
                           +
@@ -90,7 +94,8 @@ export default function CartBar() {
                     </div>
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </div>
         </div>
