@@ -12,11 +12,17 @@ import { Button, ButtonLink } from "../../components/ui/Button";
 const champ =
   "w-full border border-line bg-cream px-4 py-3 text-sm text-espresso placeholder:text-taupe/70 focus:border-rosewood focus:outline-none";
 
+/** Téléphone marocain : +212 suivi de 9 chiffres (ex. +212612345678). */
+const TELEPHONE_REGEX = /^\+212[5-7]\d{8}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function CommandePage() {
   const { cart, total, clearCart, updateQuantite, removeFromCart } = useCart();
 
   const [nom, setNom] = useState("");
-  const [telephone, setTelephone] = useState("");
+  const [telephone, setTelephone] = useState("+212");
+  const [email, setEmail] = useState("");
+  const [ville, setVille] = useState("");
   const [adresse, setAdresse] = useState("");
   const [loading, setLoading] = useState(false);
   const [confirme, setConfirme] = useState(false);
@@ -24,13 +30,31 @@ export default function CommandePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setErreur("");
 
+    if (!nom.trim() || !email.trim() || !ville.trim() || !adresse.trim()) {
+      setErreur("Merci de remplir tous les champs.");
+      return;
+    }
+    if (!TELEPHONE_REGEX.test(telephone.replace(/\s/g, ""))) {
+      setErreur(
+        "Le numéro doit commencer par +212 et être suivi de 9 chiffres (ex. +212612345678).",
+      );
+      return;
+    }
+    if (!EMAIL_REGEX.test(email.trim())) {
+      setErreur("Merci de saisir une adresse e-mail valide.");
+      return;
+    }
+
+    setLoading(true);
+
     const { error } = await supabase.from("commandes").insert({
-      nom_client: nom,
-      telephone,
-      adresse,
+      nom_client: nom.trim(),
+      telephone: telephone.trim(),
+      email: email.trim(),
+      ville: ville.trim(),
+      adresse: adresse.trim(),
       produits: cart,
       total,
       statut: "en attente",
@@ -100,14 +124,31 @@ export default function CommandePage() {
             />
             <input
               type="tel"
-              placeholder="Téléphone"
+              inputMode="tel"
+              placeholder="+212612345678"
               value={telephone}
               onChange={(e) => setTelephone(e.target.value)}
               className={champ}
               required
             />
+            <input
+              type="email"
+              placeholder="Adresse e-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={champ}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Ville"
+              value={ville}
+              onChange={(e) => setVille(e.target.value)}
+              className={champ}
+              required
+            />
             <textarea
-              placeholder="Adresse de livraison"
+              placeholder="Adresse exacte (rue, numéro, repères...)"
               value={adresse}
               onChange={(e) => setAdresse(e.target.value)}
               rows={3}

@@ -25,6 +25,10 @@ export interface Commande {
   id: string;
   nom_client: string;
   telephone: string;
+  /** Optionnel : absent sur les commandes passées avant l'ajout de ce champ. */
+  email?: string;
+  /** Optionnel : idem. */
+  ville?: string;
   adresse: string;
   produits: CommandeProduit[];
   total: number;

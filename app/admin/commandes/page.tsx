@@ -25,6 +25,8 @@ export default function CommandesPage() {
         !t ||
         c.nom_client?.toLowerCase().includes(t) ||
         c.telephone?.toLowerCase().includes(t) ||
+        c.email?.toLowerCase().includes(t) ||
+        c.ville?.toLowerCase().includes(t) ||
         c.adresse?.toLowerCase().includes(t);
       if (!match) return false;
 
@@ -132,7 +134,7 @@ export default function CommandesPage() {
           <input
             value={recherche}
             onChange={(e) => setRecherche(e.target.value)}
-            placeholder="Nom, téléphone, adresse…"
+            placeholder="Nom, téléphone, email, ville…"
             className={`${FIELD} pl-9`}
           />
         </div>
@@ -187,7 +189,13 @@ export default function CommandesPage() {
                     · {c.telephone}
                   </span>
                 </p>
-                <p className="mt-0.5 text-sm text-taupe">{c.adresse}</p>
+                {c.email && (
+                  <p className="mt-0.5 text-sm text-taupe">{c.email}</p>
+                )}
+                <p className="mt-0.5 text-sm text-taupe">
+                  {c.ville && <span>{c.ville} — </span>}
+                  {c.adresse}
+                </p>
                 <p className="mt-0.5 text-xs text-taupe">
                   {dateHeure(c.created_at)}
                 </p>
