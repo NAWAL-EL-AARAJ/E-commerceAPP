@@ -1,7 +1,6 @@
 import { PRODUIT_PHARE } from "../../lib/content";
 import { ButtonLink } from "../ui/Button";
 import Container from "../ui/Container";
-import Photo from "../ui/Photo";
 
 const PALETTE = [
   "#f3ece1",
@@ -17,8 +16,8 @@ export default function ProduitPhare() {
   return (
     <section className="py-20 sm:py-28">
       <Container>
-        <div className="overflow-hidden rounded-sm bg-blush/50">
-          <div className="flex flex-col gap-8 p-6 sm:p-10 lg:flex-row lg:items-end lg:justify-between">
+        <div className="rounded-sm bg-blush/50 p-6 sm:p-10">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-md">
               <p className="eyebrow mb-4">{PRODUIT_PHARE.eyebrow}</p>
               <h2 className="font-display text-4xl italic leading-tight text-espresso sm:text-5xl">
@@ -48,20 +47,6 @@ export default function ProduitPhare() {
                 {PRODUIT_PHARE.paletteTexte}
               </p>
             </div>
-          </div>
-
-          {/* Bannière collée au reste de la carte (pas de marge autour) : la
-              photo prolonge la carte au lieu de flotter dedans comme un
-              rectangle rapporté. Léger fondu en haut pour adoucir la jonction. */}
-          <div className="relative">
-            <Photo
-              src={PRODUIT_PHARE.image}
-              alt={PRODUIT_PHARE.nom}
-              width={1600}
-              height={800}
-              className="aspect-[2/1] w-full object-cover object-center [filter:saturate(0.94)_sepia(0.05)]"
-            />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-blush/60 to-transparent" />
           </div>
         </div>
       </Container>

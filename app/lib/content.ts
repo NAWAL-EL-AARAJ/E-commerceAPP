@@ -30,6 +30,16 @@ export const SITE = {
   },
 };
 
+export const PRODUIT_PHARE = {
+  eyebrow: "Notre produit phare",
+  nom: "Jersey Liquide",
+  titreItalique: "Jersey Liquide",
+  texte:
+    "Un foulard fluide, léger et élégant, pensé pour accompagner ton quotidien.",
+  cta: { label: "Voir toutes les couleurs", href: "/boutique" },
+  paletteTexte: "Une palette de couleurs pour chaque style.",
+};
+
 export const HERO_SLIDES: HeroSlide[] = [
   {
     eyebrow: "MERHAS",
@@ -76,16 +86,6 @@ export const FEATURES: Feature[] = [
   },
 ];
 
-export const PRODUIT_PHARE = {
-  eyebrow: "Notre produit phare",
-  nom: "Jersey Liquide",
-  titreItalique: "Jersey Liquide",
-  texte:
-    "Un foulard fluide, léger et élégant, pensé pour accompagner ton quotidien.",
-  image: "/images/produit-phare/jersey-liquide.jpg",
-  cta: { label: "Voir toutes les couleurs", href: "/boutique" },
-  paletteTexte: "Une palette de couleurs pour chaque style.",
-};
 
 export const UNIVERS = {
   eyebrow: "L'univers MERHAS",
