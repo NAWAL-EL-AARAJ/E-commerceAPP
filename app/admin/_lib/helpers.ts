@@ -72,16 +72,17 @@ export function repartitionStatuts(
   }));
 }
 
-/** Classement des produits les plus vendus, à partir des commandes passées
- * (indépendant du catalogue actuel : fonctionne même si le produit a été
- * supprimé ou renommé depuis). */
+/** Classement des produits les plus vendus, à partir des commandes
+ * effectivement livrées (indépendant du catalogue actuel : fonctionne même
+ * si le produit a été supprimé ou renommé depuis). Une commande "en attente"
+ * ou "confirmée" n'est pas encore une vente. */
 export function topProduitsVendus(
   commandes: Commande[],
   limite = 5,
 ): { nom: string; quantite: number }[] {
   const compte = new Map<string, number>();
   for (const c of commandes) {
-    if (!Array.isArray(c.produits)) continue;
+    if (c.statut !== "livrée" || !Array.isArray(c.produits)) continue;
     for (const item of c.produits) {
       if (!item.nom) continue;
       compte.set(item.nom, (compte.get(item.nom) ?? 0) + (item.quantite || 0));
@@ -93,11 +94,13 @@ export function topProduitsVendus(
     .slice(0, limite);
 }
 
+/** Quantité réellement vendue d'un produit : uniquement les commandes
+ * livrées — une commande en attente/confirmée/annulée n'est pas une vente. */
 export function ventesProduit(commandes: Commande[], nom: string): number {
   let total = 0;
   const cible = nom?.toLowerCase().trim();
   for (const c of commandes) {
-    if (!Array.isArray(c.produits)) continue;
+    if (c.statut !== "livrée" || !Array.isArray(c.produits)) continue;
     for (const item of c.produits) {
       if (item.nom?.toLowerCase().trim() === cible) total += item.quantite || 0;
     }
