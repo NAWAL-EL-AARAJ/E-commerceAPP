@@ -7,16 +7,21 @@ import { useAdmin } from "../_components/AdminProviders";
 import { Badge, Button, FIELD } from "../_components/ui";
 import { SearchIcon, TrashIcon } from "../../components/icons";
 import {
+  anneesDisponibles,
   classeStatutCommande,
   dateHeure,
+  grouperParMois,
+  MOIS_LABELS,
   STATUTS_COMMANDE,
 } from "../_lib/helpers";
 
 export default function CommandesPage() {
   const { commandes, refetchCommandes, dataLoading } = useAdmin();
   const [recherche, setRecherche] = useState("");
-  const [du, setDu] = useState("");
-  const [au, setAu] = useState("");
+  const [anneeFiltre, setAnneeFiltre] = useState("");
+  const [moisFiltre, setMoisFiltre] = useState("");
+
+  const annees = useMemo(() => anneesDisponibles(commandes), [commandes]);
 
   const filtres = useMemo(() => {
     const t = recherche.toLowerCase().trim();
@@ -30,22 +35,19 @@ export default function CommandesPage() {
         c.adresse?.toLowerCase().includes(t);
       if (!match) return false;
 
-      if (du || au) {
-        const d = new Date(c.created_at ?? 0);
-        if (du) {
-          const debut = new Date(du);
-          debut.setHours(0, 0, 0, 0);
-          if (d < debut) return false;
-        }
-        if (au) {
-          const fin = new Date(au);
-          fin.setHours(23, 59, 59, 999);
-          if (d > fin) return false;
-        }
+      if (anneeFiltre || moisFiltre) {
+        const d = new Date(c.created_at ?? "");
+        if (Number.isNaN(d.getTime())) return false;
+        if (anneeFiltre && d.getFullYear() !== Number(anneeFiltre))
+          return false;
+        if (moisFiltre && d.getMonth() + 1 !== Number(moisFiltre))
+          return false;
       }
       return true;
     });
-  }, [commandes, recherche, du, au]);
+  }, [commandes, recherche, anneeFiltre, moisFiltre]);
+
+  const groupes = useMemo(() => grouperParMois(filtres), [filtres]);
 
   const [accesErreur, setAccesErreur] = useState("");
 
@@ -98,7 +100,7 @@ export default function CommandesPage() {
     refetchCommandes();
   }
 
-  const filtreActif = recherche || du || au;
+  const filtreActif = recherche || anneeFiltre || moisFiltre;
 
   return (
     <div className="space-y-5">
@@ -139,30 +141,42 @@ export default function CommandesPage() {
           />
         </div>
         <label className="text-xs text-taupe">
-          Du
-          <input
-            type="date"
-            value={du}
-            onChange={(e) => setDu(e.target.value)}
+          Année
+          <select
+            value={anneeFiltre}
+            onChange={(e) => setAnneeFiltre(e.target.value)}
             className={`${FIELD} mt-1`}
-          />
+          >
+            <option value="">Toutes</option>
+            {annees.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="text-xs text-taupe">
-          Au
-          <input
-            type="date"
-            value={au}
-            onChange={(e) => setAu(e.target.value)}
+          Mois
+          <select
+            value={moisFiltre}
+            onChange={(e) => setMoisFiltre(e.target.value)}
             className={`${FIELD} mt-1`}
-          />
+          >
+            <option value="">Tous</option>
+            {MOIS_LABELS.map((label, i) => (
+              <option key={label} value={i + 1}>
+                {label}
+              </option>
+            ))}
+          </select>
         </label>
         {filtreActif && (
           <Button
             variant="secondary"
             onClick={() => {
               setRecherche("");
-              setDu("");
-              setAu("");
+              setAnneeFiltre("");
+              setMoisFiltre("");
             }}
           >
             Réinitialiser
@@ -175,73 +189,89 @@ export default function CommandesPage() {
         {filtreActif && ` sur ${commandes.length}`}
       </p>
 
-      <div className="space-y-3">
-        {filtres.map((c) => (
-          <div
-            key={c.id}
-            className="rounded-2xl border border-line bg-white p-5"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="font-medium text-espresso">
-                  {c.nom_client}{" "}
-                  <span className="font-normal text-taupe">
-                    · {c.telephone}
-                  </span>
-                </p>
-                {c.email && (
-                  <p className="mt-0.5 text-sm text-taupe">{c.email}</p>
-                )}
-                <p className="mt-0.5 text-sm text-taupe">
-                  {c.ville && <span>{c.ville} — </span>}
-                  {c.adresse}
-                </p>
-                <p className="mt-0.5 text-xs text-taupe">
-                  {dateHeure(c.created_at)}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge className={classeStatutCommande(c.statut)}>
-                  {c.statut}
-                </Badge>
-                <select
-                  value={c.statut}
-                  onChange={(e) => changerStatut(c.id, e.target.value)}
-                  className={`${FIELD} w-auto py-2`}
-                >
-                  {STATUTS_COMMANDE.map((s) => (
-                    <option key={s} value={s}>
-                      {s.charAt(0).toUpperCase() + s.slice(1)}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => supprimerCommande(c.id, c.nom_client)}
-                  title="Supprimer la commande"
-                  aria-label="Supprimer la commande"
-                  className="rounded-lg p-2 text-taupe transition-colors hover:bg-rosewood/10 hover:text-rosewood"
-                >
-                  <TrashIcon width={16} height={16} />
-                </button>
-              </div>
+      <div className="space-y-8">
+        {groupes.map((groupe) => (
+          <div key={groupe.cle}>
+            <div className="mb-3 flex items-baseline gap-3">
+              <h2 className="font-display text-xl capitalize text-espresso">
+                {groupe.label}
+              </h2>
+              <span className="text-xs text-taupe">
+                {groupe.commandes.length} commande
+                {groupe.commandes.length > 1 ? "s" : ""}
+              </span>
             </div>
 
-            <ul className="mt-4 divide-y divide-line border-t border-line text-sm">
-              {c.produits.map((p, i) => (
-                <li key={i} className="flex justify-between py-2">
-                  <span className="text-espresso">
-                    {p.nom}{" "}
-                    <span className="text-taupe">× {p.quantite}</span>
-                  </span>
-                  <span className="text-taupe">
-                    {prixFormate(p.prix * p.quantite)}
-                  </span>
-                </li>
+            <div className="space-y-3">
+              {groupe.commandes.map((c) => (
+                <div
+                  key={c.id}
+                  className="rounded-2xl border border-line bg-white p-5"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-espresso">
+                        {c.nom_client}{" "}
+                        <span className="font-normal text-taupe">
+                          · {c.telephone}
+                        </span>
+                      </p>
+                      {c.email && (
+                        <p className="mt-0.5 text-sm text-taupe">{c.email}</p>
+                      )}
+                      <p className="mt-0.5 text-sm text-taupe">
+                        {c.ville && <span>{c.ville} — </span>}
+                        {c.adresse}
+                      </p>
+                      <p className="mt-0.5 text-xs text-taupe">
+                        {dateHeure(c.created_at)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={classeStatutCommande(c.statut)}>
+                        {c.statut}
+                      </Badge>
+                      <select
+                        value={c.statut}
+                        onChange={(e) => changerStatut(c.id, e.target.value)}
+                        className={`${FIELD} w-auto py-2`}
+                      >
+                        {STATUTS_COMMANDE.map((s) => (
+                          <option key={s} value={s}>
+                            {s.charAt(0).toUpperCase() + s.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => supprimerCommande(c.id, c.nom_client)}
+                        title="Supprimer la commande"
+                        aria-label="Supprimer la commande"
+                        className="rounded-lg p-2 text-taupe transition-colors hover:bg-rosewood/10 hover:text-rosewood"
+                      >
+                        <TrashIcon width={16} height={16} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <ul className="mt-4 divide-y divide-line border-t border-line text-sm">
+                    {c.produits.map((p, i) => (
+                      <li key={i} className="flex justify-between py-2">
+                        <span className="text-espresso">
+                          {p.nom}{" "}
+                          <span className="text-taupe">× {p.quantite}</span>
+                        </span>
+                        <span className="text-taupe">
+                          {prixFormate(p.prix * p.quantite)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-3 flex justify-between border-t border-line pt-3 text-sm font-medium text-espresso">
+                    <span>Total</span>
+                    <span>{prixFormate(c.total)}</span>
+                  </div>
+                </div>
               ))}
-            </ul>
-            <div className="mt-3 flex justify-between border-t border-line pt-3 text-sm font-medium text-espresso">
-              <span>Total</span>
-              <span>{prixFormate(c.total)}</span>
             </div>
           </div>
         ))}

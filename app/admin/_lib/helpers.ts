@@ -130,6 +130,62 @@ export function dateCourte(iso?: string): string {
   });
 }
 
+export const MOIS_LABELS = [
+  "Janvier",
+  "Février",
+  "Mars",
+  "Avril",
+  "Mai",
+  "Juin",
+  "Juillet",
+  "Août",
+  "Septembre",
+  "Octobre",
+  "Novembre",
+  "Décembre",
+];
+
+/** Années présentes dans les commandes, la plus récente en premier. */
+export function anneesDisponibles(commandes: Commande[]): number[] {
+  const annees = new Set<number>();
+  for (const c of commandes) {
+    const d = new Date(c.created_at ?? "");
+    if (!Number.isNaN(d.getTime())) annees.add(d.getFullYear());
+  }
+  return Array.from(annees).sort((a, b) => b - a);
+}
+
+export interface GroupeMois {
+  cle: string;
+  label: string;
+  commandes: Commande[];
+}
+
+/** Regroupe les commandes par mois (les plus récentes en premier). Chaque
+ * mois garde ses propres commandes, déjà triées (created_at desc en amont). */
+export function grouperParMois(commandes: Commande[]): GroupeMois[] {
+  const groupes = new Map<string, Commande[]>();
+
+  for (const c of commandes) {
+    const d = new Date(c.created_at ?? "");
+    if (Number.isNaN(d.getTime())) continue;
+    const cle = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    if (!groupes.has(cle)) groupes.set(cle, []);
+    groupes.get(cle)!.push(c);
+  }
+
+  return Array.from(groupes.entries())
+    .sort(([a], [b]) => (a < b ? 1 : -1))
+    .map(([cle, cmds]) => {
+      const [annee, mois] = cle.split("-").map(Number);
+      return {
+        cle,
+        label: `${MOIS_LABELS[mois - 1]} ${annee}`,
+        commandes: cmds,
+      };
+    });
+}
+
 export function dateHeure(iso?: string): string {
   if (!iso) return "";
   return new Date(iso).toLocaleDateString("fr-FR", {
