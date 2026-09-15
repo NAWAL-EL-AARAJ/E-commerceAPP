@@ -43,15 +43,6 @@ export default function Footer() {
             >
               <WhatsappIcon />
             </a>
-            <a
-              href={SITE.reseaux.pinterest}
-              aria-label="Pinterest"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-cream"
-            >
-              <PinterestIcon />
-            </a>
           </div>
         </div>
 
