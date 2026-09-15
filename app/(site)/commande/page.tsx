@@ -12,21 +12,29 @@ import { Button, ButtonLink } from "../../components/ui/Button";
 const champ =
   "w-full border border-line bg-cream px-4 py-3 text-sm text-espresso placeholder:text-taupe/70 focus:border-rosewood focus:outline-none";
 
-/** Téléphone marocain : +212 suivi de 9 chiffres (ex. +212612345678). */
-const TELEPHONE_REGEX = /^\+212[5-7]\d{8}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Accepte le numéro local avec ou sans le 0 initial (0665727666 ou
+ * 665727666) et renvoie le +212XXXXXXXXX correspondant, ou null si invalide. */
+function normaliserTelephone(local: string): string | null {
+  const chiffres = local.replace(/\D/g, "");
+  const sansZero = chiffres.startsWith("0") ? chiffres.slice(1) : chiffres;
+  if (!/^[5-7]\d{8}$/.test(sansZero)) return null;
+  return `+212${sansZero}`;
+}
 
 export default function CommandePage() {
   const { cart, total, clearCart, updateQuantite, removeFromCart } = useCart();
 
   const [nom, setNom] = useState("");
-  const [telephone, setTelephone] = useState("+212");
+  const [telephoneLocal, setTelephoneLocal] = useState("");
   const [email, setEmail] = useState("");
   const [ville, setVille] = useState("");
   const [adresse, setAdresse] = useState("");
   const [loading, setLoading] = useState(false);
   const [confirme, setConfirme] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [telephoneConfirme, setTelephoneConfirme] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,9 +44,10 @@ export default function CommandePage() {
       setErreur("Merci de remplir tous les champs.");
       return;
     }
-    if (!TELEPHONE_REGEX.test(telephone.replace(/\s/g, ""))) {
+    const telephone = normaliserTelephone(telephoneLocal);
+    if (!telephone) {
       setErreur(
-        "Le numéro doit commencer par +212 et être suivi de 9 chiffres (ex. +212612345678).",
+        "Numéro invalide. Saisis ton numéro marocain, avec ou sans le 0 (ex. 0665727666 ou 665727666).",
       );
       return;
     }
@@ -51,7 +60,7 @@ export default function CommandePage() {
 
     const { error } = await supabase.from("commandes").insert({
       nom_client: nom.trim(),
-      telephone: telephone.trim(),
+      telephone,
       email: email.trim(),
       ville: ville.trim(),
       adresse: adresse.trim(),
@@ -67,6 +76,7 @@ export default function CommandePage() {
       return;
     }
 
+    setTelephoneConfirme(telephone);
     clearCart();
     setConfirme(true);
   }
@@ -79,7 +89,7 @@ export default function CommandePage() {
           <h1 className="font-display text-4xl text-espresso">Merci !</h1>
           <p className="mt-3 text-sm text-taupe">
             Ta commande a bien été enregistrée. On te contacte très vite au{" "}
-            {telephone}.
+            {telephoneConfirme}.
           </p>
           <div className="mt-8 flex justify-center">
             <ButtonLink href="/boutique">Retour à la boutique</ButtonLink>
@@ -122,15 +132,20 @@ export default function CommandePage() {
               className={champ}
               required
             />
-            <input
-              type="tel"
-              inputMode="tel"
-              placeholder="+212612345678"
-              value={telephone}
-              onChange={(e) => setTelephone(e.target.value)}
-              className={champ}
-              required
-            />
+            <div className="flex">
+              <span className="flex items-center whitespace-nowrap border border-r-0 border-line bg-sand px-3 text-sm text-taupe">
+                +212
+              </span>
+              <input
+                type="tel"
+                inputMode="numeric"
+                placeholder="06xxxxxxxx ou 6xxxxxxxx"
+                value={telephoneLocal}
+                onChange={(e) => setTelephoneLocal(e.target.value)}
+                className={`${champ} border-l-0`}
+                required
+              />
+            </div>
             <input
               type="email"
               placeholder="Adresse e-mail"
