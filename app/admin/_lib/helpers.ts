@@ -2,6 +2,15 @@ import type { Commande } from "../../lib/types";
 
 export type StockNiveau = "rupture" | "faible" | "ok";
 
+/** Retrouve le chemin d'un fichier dans un bucket Supabase Storage à partir
+ * de son URL publique (…/storage/v1/object/public/<bucket>/<chemin>). */
+export function cheminStorage(url: string, bucket: string): string | null {
+  const marqueur = `/storage/v1/object/public/${bucket}/`;
+  const i = url.indexOf(marqueur);
+  if (i === -1) return null;
+  return decodeURIComponent(url.slice(i + marqueur.length));
+}
+
 export function niveauStock(stock: number | null | undefined): {
   niveau: StockNiveau;
   label: string;

@@ -6,6 +6,7 @@ import type { Produit } from "../../lib/types";
 import { useAdmin } from "./AdminProviders";
 import Dialog from "./Dialog";
 import { Button, FIELD, Label } from "./ui";
+import { cheminStorage } from "../_lib/helpers";
 
 const NOUVELLE_CATEGORIE = "__nouvelle__";
 
@@ -73,6 +74,23 @@ export default function ProduitFormDialog({
       }
       imageUrl = supabase.storage.from("produits").getPublicUrl(fileName)
         .data.publicUrl;
+
+      // Ancienne photo remplacée : on la retire du Storage pour ne pas
+      // laisser de fichier orphelin (non bloquant si ça échoue).
+      if (edition && produit?.image_url) {
+        const ancienChemin = cheminStorage(produit.image_url, "produits");
+        if (ancienChemin) {
+          const { error: cleanupError } = await supabase.storage
+            .from("produits")
+            .remove([ancienChemin]);
+          if (cleanupError) {
+            console.error(
+              "Suppression de l'ancienne photo (storage) : " +
+                cleanupError.message,
+            );
+          }
+        }
+      }
     }
 
     const categorie =

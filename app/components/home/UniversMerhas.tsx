@@ -16,26 +16,28 @@ export default function UniversMerhas() {
               alt="Coffret MERHAS"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover opacity-40"
+              className="object-cover opacity-55"
             />
-            <div className="relative flex h-full flex-col justify-between gap-10 p-8">
-              <div>
-                <p className="eyebrow mb-4">{UNIVERS.eyebrow}</p>
-                <h2 className="font-display text-3xl leading-tight text-espresso">
+            <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
+              {/* Carte pleine (fond crème), posée sur la photo : garantit
+                  un texte lisible quel que soit ce qu'il y a derrière. */}
+              <div className="max-w-xs rounded-sm bg-cream/95 p-5 shadow-[0_4px_20px_rgba(59,48,43,0.08)] sm:p-6">
+                <p className="eyebrow mb-3">{UNIVERS.eyebrow}</p>
+                <h2 className="font-display text-2xl leading-tight text-espresso sm:text-3xl">
                   {UNIVERS.titre}{" "}
                   <em className="italic">{UNIVERS.titreItalique}</em>
                 </h2>
-                <p className="mt-4 max-w-xs text-sm leading-relaxed text-taupe">
+                <p className="mt-3 text-sm leading-relaxed text-taupe">
                   {UNIVERS.texte}
                 </p>
+                <Link
+                  href={UNIVERS.cta.href}
+                  className="mt-5 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-espresso hover:text-rosewood"
+                >
+                  {UNIVERS.cta.label}
+                  <ArrowRightIcon width={15} height={15} />
+                </Link>
               </div>
-              <Link
-                href={UNIVERS.cta.href}
-                className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.2em] text-espresso hover:text-rosewood"
-              >
-                {UNIVERS.cta.label}
-                <ArrowRightIcon width={15} height={15} />
-              </Link>
             </div>
           </div>
 

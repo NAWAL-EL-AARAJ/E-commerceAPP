@@ -15,7 +15,7 @@ import {
   SearchIcon,
   TrashIcon,
 } from "../../components/icons";
-import { niveauStock } from "../_lib/helpers";
+import { cheminStorage, niveauStock } from "../_lib/helpers";
 
 export default function ProduitsPage() {
   const { produits, refetchProduits, getVentes, dataLoading } = useAdmin();
@@ -36,11 +36,29 @@ export default function ProduitsPage() {
 
   async function supprimer(p: Produit) {
     if (!confirm(`Supprimer « ${p.nom} » ?`)) return;
+
     const { error } = await supabase.from("produits").delete().eq("id", p.id);
     if (error) {
       alert("Erreur : " + error.message);
       return;
     }
+
+    // Nettoie aussi la photo dans le Storage Supabase. Non bloquant : si ça
+    // échoue, le produit est quand même supprimé (juste un fichier orphelin).
+    if (p.image_url) {
+      const chemin = cheminStorage(p.image_url, "produits");
+      if (chemin) {
+        const { error: storageError } = await supabase.storage
+          .from("produits")
+          .remove([chemin]);
+        if (storageError) {
+          console.error(
+            "Suppression de la photo (storage) : " + storageError.message,
+          );
+        }
+      }
+    }
+
     refetchProduits();
   }
 
