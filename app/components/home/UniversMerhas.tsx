@@ -50,9 +50,12 @@ export default function UniversMerhas() {
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover opacity-60"
             />
-            <p className="relative max-w-[16rem] text-center font-script text-3xl leading-tight text-espresso">
-              {UNIVERS.script} <span className="text-rosewood">&#9825;</span>
-            </p>
+            <div className="relative mx-6 max-w-[16rem] rounded-sm bg-cream/95 px-6 py-8 text-center shadow-[0_4px_20px_rgba(59,48,43,0.08)]">
+              <p className="font-script text-3xl leading-tight text-espresso">
+                {UNIVERS.script}{" "}
+                <span className="text-rosewood">&#9825;</span>
+              </p>
+            </div>
           </div>
         </div>
       </Container>
