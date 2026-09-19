@@ -34,8 +34,34 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   const { session, signOut, produits, commandes } = useAdmin();
   const [open, setOpen] = useState(false);
+  // Menu de gauche sur grand écran : affiché ou masqué au choix (mémorisé)
+  const [menuVisible, setMenuVisible] = useState(true);
 
   useEffect(() => setOpen(false), [pathname]);
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("merhas_admin_menu") === "masque")
+        setMenuVisible(false);
+    } catch {
+      /* localStorage indisponible */
+    }
+  }, []);
+
+  function basculerMenu() {
+    if (window.matchMedia("(min-width: 1024px)").matches) {
+      setMenuVisible((v) => {
+        try {
+          localStorage.setItem("merhas_admin_menu", v ? "masque" : "visible");
+        } catch {
+          /* ignore */
+        }
+        return !v;
+      });
+    } else {
+      setOpen(true);
+    }
+  }
 
   const nom = session?.user?.user_metadata?.nom as string | undefined;
   const avatar = session?.user?.user_metadata?.avatar_url as string | undefined;
@@ -123,9 +149,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-cream text-espresso">
       {/* Sidebar desktop */}
-      <aside className="fixed inset-y-0 left-0 hidden w-64 bg-espresso lg:block">
-        {SidebarContent}
-      </aside>
+      {menuVisible && (
+        <aside className="fixed inset-y-0 left-0 hidden w-64 bg-espresso lg:block">
+          {SidebarContent}
+        </aside>
+      )}
 
       {/* Drawer mobile */}
       {open && (
@@ -147,13 +175,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </div>
       )}
 
-      <div className="lg:pl-64">
+      <div className={menuVisible ? "lg:pl-64" : ""}>
         {/* Topbar */}
         <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-line bg-cream/90 px-4 backdrop-blur sm:px-6">
           <button
-            onClick={() => setOpen(true)}
-            aria-label="Ouvrir le menu"
-            className="text-espresso lg:hidden"
+            onClick={basculerMenu}
+            aria-label={menuVisible ? "Masquer le menu" : "Afficher le menu"}
+            title={menuVisible ? "Masquer le menu" : "Afficher le menu"}
+            className="rounded-md p-1 text-espresso transition-colors hover:bg-blush/50"
           >
             <MenuIcon width={22} height={22} />
           </button>
