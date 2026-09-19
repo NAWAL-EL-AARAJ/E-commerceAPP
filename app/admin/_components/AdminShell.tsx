@@ -11,6 +11,7 @@ import {
   LogoutIcon,
   MenuIcon,
   TagIcon,
+  UserIcon,
 } from "../../components/icons";
 import { useAdmin } from "./AdminProviders";
 import { initiales } from "../_lib/helpers";
@@ -19,12 +20,14 @@ const NAV = [
   { href: "/admin", label: "Tableau de bord", icon: GridIcon, exact: true },
   { href: "/admin/produits", label: "Produits", icon: TagIcon },
   { href: "/admin/commandes", label: "Commandes", icon: BagIcon },
+  { href: "/admin/profil", label: "Admin", icon: UserIcon },
 ];
 
 const TITRES: Record<string, string> = {
   "/admin": "Tableau de bord",
   "/admin/produits": "Produits",
   "/admin/commandes": "Commandes",
+  "/admin/profil": "Admin",
 };
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
