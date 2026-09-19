@@ -53,12 +53,16 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   const SidebarContent = (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-5 py-6">
+      <Link
+        href="/admin"
+        aria-label="Retour au tableau de bord"
+        className="flex items-center gap-3 px-5 py-6"
+      >
         <Logo size={48} priority />
         <span className="text-xs uppercase tracking-[0.2em] text-cream/50">
           Admin
         </span>
-      </div>
+      </Link>
 
       <nav className="mt-2 flex-1 space-y-1 px-3">
         {NAV.map(({ href, label, icon: Icon, exact }) => {
