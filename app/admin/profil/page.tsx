@@ -29,6 +29,7 @@ export default function AdminPage() {
       setMessage("Erreur : " + error.message);
       return;
     }
+    setNom(nom.trim());
     await refreshSession();
     setMessage("Nom mis à jour.");
   }

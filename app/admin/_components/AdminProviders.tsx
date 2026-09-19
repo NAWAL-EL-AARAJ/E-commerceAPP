@@ -26,6 +26,11 @@ interface AdminContextValue {
   getVentes: (nom: string) => number;
 }
 
+/** supabase-js modifie la session en place : sans copie, React ne voit aucun
+ * changement et n'actualise pas l'affichage (ex. nom d'utilisateur). */
+const copie = (s: Session | null): Session | null =>
+  s ? { ...s, user: { ...s.user } } : null;
+
 const AdminContext = createContext<AdminContextValue | undefined>(undefined);
 
 export function AdminProvider({ children }: { children: ReactNode }) {
@@ -37,11 +42,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+      setSession(copie(data.session));
       setAuthLoading(false);
+      // Profil frais depuis Supabase (évite d'afficher un nom périmé du cache)
+      if (data.session) {
+        supabase.auth.getUser().then(({ data: u }) => {
+          if (u.user) setSession((prev) => (prev ? { ...prev, user: u.user } : prev));
+        });
+      }
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_e, s) =>
-      setSession(s),
+      setSession(copie(s)),
     );
     return () => listener.subscription.unsubscribe();
   }, []);
@@ -63,16 +74,18 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshSession = useCallback(async () => {
-    const { data } = await supabase.auth.getSession();
-    setSession(data.session);
+    const { data } = await supabase.auth.getUser();
+    if (data.user) setSession((prev) => (prev ? { ...prev, user: data.user } : prev));
   }, []);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
   }, []);
 
+  const utilisateurId = session?.user.id ?? null;
+
   useEffect(() => {
-    if (!session) {
+    if (!utilisateurId) {
       setDataLoading(false);
       return;
     }
@@ -80,7 +93,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     Promise.all([refetchProduits(), refetchCommandes()]).finally(() =>
       setDataLoading(false),
     );
-  }, [session, refetchProduits, refetchCommandes]);
+  }, [utilisateurId, refetchProduits, refetchCommandes]);
 
   const getVentes = useCallback(
     (nom: string) => ventesProduit(commandes, nom),
