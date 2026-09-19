@@ -5,6 +5,7 @@ import { prixFormate, PLACEHOLDER_PRODUIT } from "../../../lib/content";
 import type { Produit } from "../../../lib/types";
 import Container from "../../../components/ui/Container";
 import Photo from "../../../components/ui/Photo";
+import RichText from "../../../components/ui/RichText";
 import AddToCartButton from "../../../components/product/AddToCartButton";
 import ColorSwatches, {
   listeCouleurs,
@@ -64,11 +65,7 @@ export default async function FicheProduit({
               {prixFormate(produit.prix)}
             </p>
 
-            {produit.description && (
-              <p className="mt-6 max-w-md text-sm leading-relaxed text-taupe">
-                {produit.description}
-              </p>
-            )}
+            <RichText html={produit.description} className="mt-6 max-w-md" />
 
             {couleurs.length > 1 && (
               <div className="mt-8">

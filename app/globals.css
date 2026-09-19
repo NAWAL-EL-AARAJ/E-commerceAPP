@@ -57,6 +57,53 @@
   }
 }
 
+/* Texte enrichi (descriptions produit) : même rendu dans l'éditeur admin et
+   sur le site. */
+.rich-text {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: var(--color-taupe);
+}
+.rich-text p,
+.rich-text div {
+  margin: 0 0 0.75rem;
+}
+.rich-text h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-espresso);
+  margin: 1.5rem 0 0.5rem;
+}
+.rich-text > h3:first-child {
+  margin-top: 0;
+}
+.rich-text strong {
+  font-weight: 600;
+}
+.rich-text ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0 0 0.75rem;
+}
+.rich-text ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+  margin: 0 0 0.75rem;
+}
+.rich-text li {
+  margin-bottom: 0.25rem;
+}
+.rich-text > :last-child {
+  margin-bottom: 0;
+}
+.rich-editor:empty::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--color-taupe) 60%, transparent);
+  pointer-events: none;
+}
+
 @keyframes merhas-fade {
   from {
     opacity: 0;

@@ -1,6 +1,7 @@
 "use client";
 
 import { prixFormate } from "../../lib/content";
+import RichText, { descriptionVide } from "../../components/ui/RichText";
 import type { Produit } from "../../lib/types";
 import { niveauStock } from "../_lib/helpers";
 import Dialog from "./Dialog";
@@ -27,9 +28,11 @@ export default function ProduitViewDialog({
           className="mb-4 max-h-64 w-full rounded-xl object-cover"
         />
       )}
-      <p className="text-sm leading-relaxed text-taupe">
-        {produit.description || "Aucune description."}
-      </p>
+      {descriptionVide(produit.description) ? (
+        <p className="text-sm text-taupe">Aucune description.</p>
+      ) : (
+        <RichText html={produit.description} />
+      )}
       <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
         <Info label="Prix">{prixFormate(produit.prix)}</Info>
         <Info label="Catégorie">{produit.categorie || "—"}</Info>

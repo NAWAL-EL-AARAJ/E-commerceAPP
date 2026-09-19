@@ -7,6 +7,7 @@ import { useAdmin } from "./AdminProviders";
 import Dialog from "./Dialog";
 import { Button, FIELD, Label } from "./ui";
 import { cheminStorage } from "../_lib/helpers";
+import RichTextEditor from "./RichTextEditor";
 
 const NOUVELLE_CATEGORIE = "__nouvelle__";
 
@@ -175,12 +176,7 @@ export default function ProduitFormDialog({
 
         <div>
           <Label>Description</Label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-            className={`${FIELD} resize-y`}
-          />
+          <RichTextEditor value={description} onChange={setDescription} />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
