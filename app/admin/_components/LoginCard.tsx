@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 import Logo from "../../components/ui/Logo";
 import { Button, FIELD } from "./ui";
@@ -55,6 +56,13 @@ export default function LoginCard() {
           </Button>
           {erreur && <p className="text-sm text-rosewood">{erreur}</p>}
         </form>
+
+        <Link
+          href="/"
+          className="mt-6 block text-center text-xs uppercase tracking-[0.2em] text-taupe hover:text-rosewood"
+        >
+          ← Visiter le site
+        </Link>
       </div>
     </main>
   );
