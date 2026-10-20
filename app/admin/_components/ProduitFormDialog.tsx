@@ -8,6 +8,7 @@ import { useAdmin } from "./AdminProviders";
 import Dialog from "./Dialog";
 import { Button, FIELD, Label } from "./ui";
 import { cheminStorage } from "../_lib/helpers";
+import { revaliderSite } from "../_lib/revalider";
 import RichTextEditor from "./RichTextEditor";
 
 const NOUVELLE_CATEGORIE = "__nouvelle__";
@@ -161,6 +162,7 @@ export default function ProduitFormDialog({
       return;
     }
 
+    revaliderSite();
     await onDone();
     onClose();
   }

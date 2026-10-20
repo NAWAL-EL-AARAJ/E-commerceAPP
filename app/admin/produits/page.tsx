@@ -16,6 +16,7 @@ import {
   TrashIcon,
 } from "../../components/icons";
 import { cheminStorage, niveauStock } from "../_lib/helpers";
+import { revaliderSite } from "../_lib/revalider";
 
 export default function ProduitsPage() {
   const { produits, refetchProduits, getVentes, dataLoading } = useAdmin();
@@ -59,6 +60,7 @@ export default function ProduitsPage() {
       }
     }
 
+    revaliderSite();
     refetchProduits();
   }
 
