@@ -1,6 +1,6 @@
 "use client";
 
-import { prixFormate } from "../../lib/content";
+import PrixAffiche from "../../components/product/PrixAffiche";
 import { galerieProduit } from "../../lib/produit";
 import RichText, { descriptionVide } from "../../components/ui/RichText";
 import type { Produit } from "../../lib/types";
@@ -49,7 +49,7 @@ export default function ProduitViewDialog({
         <RichText html={produit.description} />
       )}
       <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
-        <Info label="Prix">{prixFormate(produit.prix)}</Info>
+        <Info label="Prix"><PrixAffiche prix={produit.prix} ancienPrix={produit.ancien_prix} /></Info>
         <Info label="Catégorie">{produit.categorie || "—"}</Info>
         <Info label="Stock">
           <span className="inline-flex items-center gap-2">

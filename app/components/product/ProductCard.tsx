@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useWishlist } from "../../context/WishlistContext";
-import { prixFormate, PLACEHOLDER_PRODUIT } from "../../lib/content";
+import { enPromo, PLACEHOLDER_PRODUIT } from "../../lib/content";
 import type { Produit } from "../../lib/types";
 import { HeartIcon } from "../icons";
 import Photo from "../ui/Photo";
 import ColorSwatches, { listeCouleurs } from "./ColorSwatches";
 import AddToCartButton from "./AddToCartButton";
+import PrixAffiche from "./PrixAffiche";
 
 export default function ProductCard({
   produit,
@@ -47,10 +48,16 @@ export default function ProductCard({
           />
         </button>
 
-        {produit.stock === 0 && (
+        {produit.stock === 0 ? (
           <span className="absolute left-3 top-3 rounded-full bg-espresso/80 px-3 py-1 text-[0.6rem] uppercase tracking-[0.15em] text-cream">
             Épuisé
           </span>
+        ) : (
+          enPromo(produit.prix, produit.ancien_prix) && (
+            <span className="absolute left-3 top-3 rounded-full bg-rosewood px-3 py-1 text-[0.6rem] uppercase tracking-[0.15em] text-cream">
+              Promo
+            </span>
+          )
         )}
       </div>
 
@@ -65,7 +72,11 @@ export default function ProductCard({
             {produit.nom}
           </Link>
         </h3>
-        <p className="mt-1 text-sm text-taupe">{prixFormate(produit.prix)}</p>
+        <PrixAffiche
+          prix={produit.prix}
+          ancienPrix={produit.ancien_prix}
+          className="mt-1"
+        />
 
         {couleurs.length > 0 && (
           <div className="mt-3">

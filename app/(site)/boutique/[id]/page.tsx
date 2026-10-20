@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
-import { prixFormate } from "../../../lib/content";
+import PrixAffiche from "../../../components/product/PrixAffiche";
 import { galerieProduit } from "../../../lib/produit";
 import type { Produit } from "../../../lib/types";
 import Container from "../../../components/ui/Container";
@@ -53,9 +53,12 @@ export default async function FicheProduit({
             <h1 className="font-display text-4xl text-espresso sm:text-5xl">
               {produit.nom}
             </h1>
-            <p className="mt-4 text-lg text-rosewood">
-              {prixFormate(produit.prix)}
-            </p>
+            <PrixAffiche
+              prix={produit.prix}
+              ancienPrix={produit.ancien_prix}
+              taille="lg"
+              className="mt-4"
+            />
 
             <RichText html={produit.description} className="mt-6 max-w-md" />
 

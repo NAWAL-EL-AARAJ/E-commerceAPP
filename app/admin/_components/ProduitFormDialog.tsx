@@ -43,6 +43,12 @@ export default function ProduitFormDialog({
   const [prix, setPrix] = useState(
     produit?.prix != null ? String(produit.prix) : "",
   );
+  const [ancienPrix, setAncienPrix] = useState(
+    produit?.ancien_prix != null ? String(produit.ancien_prix) : "",
+  );
+  const [enPromotion, setEnPromotion] = useState(
+    Boolean(produit?.ancien_prix),
+  );
   const [stock, setStock] = useState(
     produit?.stock != null ? String(produit.stock) : "",
   );
@@ -145,6 +151,8 @@ export default function ProduitFormDialog({
       nom,
       description,
       prix: parseFloat(prix),
+      ancien_prix:
+        enPromotion && ancienPrix ? parseFloat(ancienPrix) : null,
       image_url: images[0] ?? "",
       images,
       stock: parseInt(stock) || 0,
@@ -274,6 +282,36 @@ export default function ProduitFormDialog({
               className={FIELD}
             />
           </div>
+        </div>
+
+        <div className="rounded-lg border border-line bg-cream/40 p-3">
+          <label className="flex items-center gap-2 text-sm text-espresso">
+            <input
+              type="checkbox"
+              checked={enPromotion}
+              onChange={(e) => setEnPromotion(e.target.checked)}
+              className="h-4 w-4 accent-rosewood"
+            />
+            Produit en promotion
+          </label>
+          {enPromotion && (
+            <div className="mt-3">
+              <Label>Ancien prix (DH)</Label>
+              <input
+                type="number"
+                step="0.01"
+                value={ancienPrix}
+                onChange={(e) => setAncienPrix(e.target.value)}
+                placeholder="Ex. 250"
+                className={FIELD}
+              />
+              <p className="mt-1.5 text-xs text-taupe">
+                Affiché barré à côté du prix actuel ({prix || "…"} DH), avec
+                le pourcentage de réduction. Laisse vide pour ne rien
+                afficher.
+              </p>
+            </div>
+          )}
         </div>
 
         <div>

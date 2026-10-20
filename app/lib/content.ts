@@ -6,6 +6,15 @@ export const DEVISE = "DH";
 export const prixFormate = (prix: number | null | undefined) =>
   `${Number(prix ?? 0).toLocaleString("fr-FR")} ${DEVISE}`;
 
+/** Vrai si un ancien prix doit s'afficher barré (promotion en cours). */
+export const enPromo = (
+  prix: number,
+  ancienPrix: number | null | undefined,
+) => Boolean(ancienPrix) && (ancienPrix as number) > prix;
+
+export const pourcentagePromo = (prix: number, ancienPrix: number) =>
+  Math.round((1 - prix / ancienPrix) * 100);
+
 export const NAV_LINKS: NavLink[] = [
   { label: "Accueil", href: "/" },
   { label: "Boutique", href: "/boutique" },

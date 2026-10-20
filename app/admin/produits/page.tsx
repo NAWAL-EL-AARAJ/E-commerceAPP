@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { prixFormate } from "../../lib/content";
+import PrixAffiche from "../../components/product/PrixAffiche";
 import type { Produit } from "../../lib/types";
 import { useAdmin } from "../_components/AdminProviders";
 import { Badge, Button, FIELD } from "../_components/ui";
@@ -128,8 +128,8 @@ export default function ProduitsPage() {
                     <td className="px-4 py-3 text-taupe">
                       {p.categorie || "—"}
                     </td>
-                    <td className="px-4 py-3 text-espresso">
-                      {prixFormate(p.prix)}
+                    <td className="px-4 py-3">
+                      <PrixAffiche prix={p.prix} ancienPrix={p.ancien_prix} />
                     </td>
                     <td className="px-4 py-3">
                       <span className="flex items-center gap-2">
