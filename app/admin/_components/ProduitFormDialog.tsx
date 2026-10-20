@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase";
+import { galerieProduit } from "../../lib/produit";
 import type { Produit } from "../../lib/types";
 import { useAdmin } from "./AdminProviders";
 import Dialog from "./Dialog";
@@ -48,46 +49,86 @@ export default function ProduitFormDialog({
     produit?.categorie?.trim() ?? "",
   );
   const [nouvelleCategorie, setNouvelleCategorie] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // Photos : celles déjà en ligne (modifiables/supprimables une à une) + les
+  // nouveaux fichiers ajoutés dans cette session d'édition.
+  const [imagesExistantes, setImagesExistantes] = useState<string[]>(
+    () => (produit ? galerieProduit(produit) : []),
+  );
+  const [nouveauxFichiers, setNouveauxFichiers] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [erreur, setErreur] = useState("");
 
+  const apercusNouveaux = useMemo(
+    () => nouveauxFichiers.map((f) => URL.createObjectURL(f)),
+    [nouveauxFichiers],
+  );
+  const totalPhotos = imagesExistantes.length + nouveauxFichiers.length;
+
+  function ajouterFichiers(fichiers: FileList | null) {
+    if (!fichiers) return;
+    setNouveauxFichiers((prev) => [...prev, ...Array.from(fichiers)]);
+  }
+
+  function retirerExistante(url: string) {
+    setImagesExistantes((prev) => prev.filter((u) => u !== url));
+  }
+
+  function retirerNouveau(index: number) {
+    setNouveauxFichiers((prev) => prev.filter((_, i) => i !== index));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErreur("");
+
+    if (totalPhotos === 0) {
+      setErreur("Ajoute au moins une photo.");
+      return;
+    }
+
     setLoading(true);
 
-    let imageUrl = produit?.image_url ?? "";
-
-    if (imageFile) {
+    // 1. Upload des nouvelles photos
+    const urlsNouvelles: string[] = [];
+    if (nouveauxFichiers.length > 0) {
       setUploading(true);
-      const fileName = `${Date.now()}-${imageFile.name}`;
-      const { error: uploadError } = await supabase.storage
-        .from("produits")
-        .upload(fileName, imageFile);
-      setUploading(false);
+      for (const fichier of nouveauxFichiers) {
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${fichier.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("produits")
+          .upload(fileName, fichier);
 
-      if (uploadError) {
-        setErreur("Erreur upload image : " + uploadError.message);
-        setLoading(false);
-        return;
+        if (uploadError) {
+          setUploading(false);
+          setLoading(false);
+          setErreur("Erreur upload image : " + uploadError.message);
+          return;
+        }
+        urlsNouvelles.push(
+          supabase.storage.from("produits").getPublicUrl(fileName).data
+            .publicUrl,
+        );
       }
-      imageUrl = supabase.storage.from("produits").getPublicUrl(fileName)
-        .data.publicUrl;
+      setUploading(false);
+    }
 
-      // Ancienne photo remplacée : on la retire du Storage pour ne pas
-      // laisser de fichier orphelin (non bloquant si ça échoue).
-      if (edition && produit?.image_url) {
-        const ancienChemin = cheminStorage(produit.image_url, "produits");
-        if (ancienChemin) {
+    const images = [...imagesExistantes, ...urlsNouvelles];
+
+    // 2. Nettoyage des photos retirées (non bloquant)
+    if (edition) {
+      const avant = galerieProduit(produit!);
+      const retirees = avant.filter((u) => !imagesExistantes.includes(u));
+      for (const url of retirees) {
+        const chemin = cheminStorage(url, "produits");
+        if (chemin) {
           const { error: cleanupError } = await supabase.storage
             .from("produits")
-            .remove([ancienChemin]);
+            .remove([chemin]);
           if (cleanupError) {
             console.error(
-              "Suppression de l'ancienne photo (storage) : " +
-                cleanupError.message,
+              "Suppression de la photo (storage) : " + cleanupError.message,
             );
           }
         }
@@ -103,7 +144,8 @@ export default function ProduitFormDialog({
       nom,
       description,
       prix: parseFloat(prix),
-      image_url: imageUrl,
+      image_url: images[0] ?? "",
+      images,
       stock: parseInt(stock) || 0,
       categorie,
     };
@@ -123,10 +165,6 @@ export default function ProduitFormDialog({
     onClose();
   }
 
-  const apercu = imageFile
-    ? URL.createObjectURL(imageFile)
-    : (produit?.image_url ?? null);
-
   return (
     <Dialog
       titre={edition ? "Modifier le produit" : "Ajouter un produit"}
@@ -134,33 +172,67 @@ export default function ProduitFormDialog({
       size="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex items-start gap-4">
-          <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-cream">
-            {apercu ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={apercu}
-                alt=""
-                className="h-full w-full object-cover"
+        <div>
+          <Label>Photos ({totalPhotos})</Label>
+          <div className="flex flex-wrap gap-3">
+            {imagesExistantes.map((url) => (
+              <div
+                key={url}
+                className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-line bg-cream"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="h-full w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => retirerExistante(url)}
+                  aria-label="Retirer cette photo"
+                  className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-espresso/70 text-xs text-cream opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            {nouveauxFichiers.map((fichier, i) => (
+              <div
+                key={fichier.name + i}
+                className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-rosewood/40 bg-cream"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={apercusNouveaux[i]}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => retirerNouveau(i)}
+                  aria-label="Retirer cette photo"
+                  className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-espresso/70 text-xs text-cream opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+
+            <label className="flex h-20 w-20 shrink-0 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-line text-taupe transition-colors hover:border-rosewood hover:text-rosewood">
+              <span className="text-xl leading-none">+</span>
+              <span className="text-[0.65rem]">Ajouter</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => {
+                  ajouterFichiers(e.target.files);
+                  e.target.value = "";
+                }}
+                className="hidden"
               />
-            ) : (
-              <span className="text-xs text-taupe">Photo</span>
-            )}
+            </label>
           </div>
-          <div className="flex-1">
-            <Label>Photo</Label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-              className="block w-full text-sm text-taupe file:mr-3 file:rounded-lg file:border file:border-line file:bg-white file:px-3 file:py-2 file:text-sm file:text-espresso hover:file:bg-cream"
-            />
-            {edition && (
-              <p className="mt-1 text-xs text-taupe">
-                Laisse vide pour garder la photo actuelle.
-              </p>
-            )}
-          </div>
+          <p className="mt-2 text-xs text-taupe">
+            La première photo est utilisée comme image principale (boutique,
+            panier…). Glisse-déposer non géré : utilise « Ajouter ».
+          </p>
         </div>
 
         <div>
@@ -240,7 +312,7 @@ export default function ProduitFormDialog({
           </Button>
           <Button type="submit" disabled={loading}>
             {uploading
-              ? "Envoi de l'image…"
+              ? "Envoi des photos…"
               : loading
                 ? "Enregistrement…"
                 : edition

@@ -1,6 +1,7 @@
 "use client";
 
 import { prixFormate } from "../../lib/content";
+import { galerieProduit } from "../../lib/produit";
 import RichText, { descriptionVide } from "../../components/ui/RichText";
 import type { Produit } from "../../lib/types";
 import { niveauStock } from "../_lib/helpers";
@@ -17,16 +18,30 @@ export default function ProduitViewDialog({
   onClose: () => void;
 }) {
   const stock = niveauStock(produit.stock);
+  const galerie = galerieProduit(produit);
 
   return (
     <Dialog titre={produit.nom} onClose={onClose}>
-      {produit.image_url && (
+      {galerie[0] && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={produit.image_url}
+          src={galerie[0]}
           alt={produit.nom}
-          className="mb-4 max-h-64 w-full rounded-xl object-cover"
+          className="mb-2 max-h-64 w-full rounded-xl object-cover"
         />
+      )}
+      {galerie.length > 1 && (
+        <div className="mb-4 flex gap-2 overflow-x-auto">
+          {galerie.slice(1).map((url) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={url}
+              src={url}
+              alt=""
+              className="h-14 w-14 shrink-0 rounded-lg object-cover"
+            />
+          ))}
+        </div>
       )}
       {descriptionVide(produit.description) ? (
         <p className="text-sm text-taupe">Aucune description.</p>

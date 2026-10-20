@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
-import { prixFormate, PLACEHOLDER_PRODUIT } from "../../../lib/content";
+import { prixFormate } from "../../../lib/content";
+import { galerieProduit } from "../../../lib/produit";
 import type { Produit } from "../../../lib/types";
 import Container from "../../../components/ui/Container";
-import Photo from "../../../components/ui/Photo";
 import RichText from "../../../components/ui/RichText";
 import AddToCartButton from "../../../components/product/AddToCartButton";
+import ProductGallery from "../../../components/product/ProductGallery";
 import ColorSwatches, {
   listeCouleurs,
 } from "../../../components/product/ColorSwatches";
@@ -43,16 +44,7 @@ export default async function FicheProduit({
         </nav>
 
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="overflow-hidden rounded-sm bg-sand">
-            <Photo
-              src={produit.image_url || PLACEHOLDER_PRODUIT}
-              alt={produit.nom}
-              width={900}
-              height={1080}
-              priority
-              className="aspect-[5/6] w-full object-cover"
-            />
-          </div>
+          <ProductGallery images={galerieProduit(produit)} alt={produit.nom} />
 
           <div className="lg:py-6">
             {produit.categorie && (

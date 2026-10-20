@@ -3,7 +3,10 @@ export interface Produit {
   nom: string;
   description: string | null;
   prix: number;
+  /** Photo de couverture — toujours égale à images[0] quand la galerie existe. */
   image_url: string | null;
+  /** Galerie complète. Optionnel : absent sur les produits créés avant son ajout. */
+  images?: string[] | null;
   stock: number | null;
   categorie: string | null;
   couleurs?: string[] | string | null;
