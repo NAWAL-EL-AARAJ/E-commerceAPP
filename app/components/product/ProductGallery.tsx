@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PLACEHOLDER_PRODUIT } from "../../lib/content";
+import { ChevronLeftIcon, ChevronRightIcon } from "../icons";
 import Photo from "../ui/Photo";
 
 export default function ProductGallery({
@@ -13,10 +14,15 @@ export default function ProductGallery({
 }) {
   const photos = images.length > 0 ? images : [PLACEHOLDER_PRODUIT];
   const [actif, setActif] = useState(0);
+  const plusieurs = photos.length > 1;
+
+  function aller(delta: number) {
+    setActif((i) => (i + delta + photos.length) % photos.length);
+  }
 
   return (
     <div>
-      <div className="overflow-hidden rounded-sm bg-sand">
+      <div className="group relative overflow-hidden rounded-sm bg-sand">
         <Photo
           src={photos[actif]}
           alt={alt}
@@ -25,9 +31,34 @@ export default function ProductGallery({
           priority
           className="aspect-[5/6] w-full object-cover"
         />
+
+        {plusieurs && (
+          <>
+            <button
+              type="button"
+              onClick={() => aller(-1)}
+              aria-label="Photo précédente"
+              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-cream/85 text-espresso opacity-0 shadow-sm transition-opacity hover:bg-cream group-hover:opacity-100 focus-visible:opacity-100"
+            >
+              <ChevronLeftIcon width={18} height={18} />
+            </button>
+            <button
+              type="button"
+              onClick={() => aller(1)}
+              aria-label="Photo suivante"
+              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-cream/85 text-espresso opacity-0 shadow-sm transition-opacity hover:bg-cream group-hover:opacity-100 focus-visible:opacity-100"
+            >
+              <ChevronRightIcon width={18} height={18} />
+            </button>
+
+            <span className="absolute bottom-3 right-3 rounded-full bg-espresso/70 px-2.5 py-1 text-[0.65rem] text-cream">
+              {actif + 1} / {photos.length}
+            </span>
+          </>
+        )}
       </div>
 
-      {photos.length > 1 && (
+      {plusieurs && (
         <div className="mt-3 grid grid-cols-5 gap-3">
           {photos.map((src, i) => (
             <button
