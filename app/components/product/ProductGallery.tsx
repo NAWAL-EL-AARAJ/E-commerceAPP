@@ -38,7 +38,7 @@ export default function ProductGallery({
               type="button"
               onClick={() => aller(-1)}
               aria-label="Photo précédente"
-              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-cream/85 text-espresso opacity-0 shadow-sm transition-opacity hover:bg-cream group-hover:opacity-100 focus-visible:opacity-100"
+              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-cream/85 text-espresso shadow-sm transition-colors hover:bg-cream"
             >
               <ChevronLeftIcon width={18} height={18} />
             </button>
@@ -46,7 +46,7 @@ export default function ProductGallery({
               type="button"
               onClick={() => aller(1)}
               aria-label="Photo suivante"
-              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-cream/85 text-espresso opacity-0 shadow-sm transition-opacity hover:bg-cream group-hover:opacity-100 focus-visible:opacity-100"
+              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-cream/85 text-espresso shadow-sm transition-colors hover:bg-cream"
             >
               <ChevronRightIcon width={18} height={18} />
             </button>
