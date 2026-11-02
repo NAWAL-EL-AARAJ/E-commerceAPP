@@ -6,17 +6,6 @@ export const DEVISE = "DH";
 export const prixFormate = (prix: number | null | undefined) =>
   `${Number(prix ?? 0).toLocaleString("fr-FR")} ${DEVISE}`;
 
-/** Frais de livraison (en DEVISE) : Casablanca, puis toutes les autres villes. */
-export const LIVRAISON = { casablanca: 20, autres: 35 };
-
-/** Frais pour la ville saisie ; reconnaît « Casa », « Casablanca », « الدار البيضاء »… */
-export const fraisLivraison = (ville: string) => {
-  const v = ville.trim().toLowerCase();
-  return v.includes("casa") || v.includes("البيضاء") || v.includes("كازا")
-    ? LIVRAISON.casablanca
-    : LIVRAISON.autres;
-};
-
 /** Vrai si un ancien prix doit s'afficher barré (promotion en cours). */
 export const enPromo = (
   prix: number,
