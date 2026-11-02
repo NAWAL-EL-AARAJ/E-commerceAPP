@@ -6,6 +6,17 @@ export const DEVISE = "DH";
 export const prixFormate = (prix: number | null | undefined) =>
   `${Number(prix ?? 0).toLocaleString("fr-FR")} ${DEVISE}`;
 
+/** Frais de livraison (en DEVISE) : Casablanca, puis toutes les autres villes. */
+export const LIVRAISON = { casablanca: 20, autres: 35 };
+
+/** Frais pour la ville saisie ; reconnaît « Casa », « Casablanca », « الدار البيضاء »… */
+export const fraisLivraison = (ville: string) => {
+  const v = ville.trim().toLowerCase();
+  return v.includes("casa") || v.includes("البيضاء") || v.includes("كازا")
+    ? LIVRAISON.casablanca
+    : LIVRAISON.autres;
+};
+
 /** Vrai si un ancien prix doit s'afficher barré (promotion en cours). */
 export const enPromo = (
   prix: number,
@@ -39,15 +50,31 @@ export const SITE = {
   },
 };
 
-export const PRODUIT_PHARE = {
-  eyebrow: "Notre produit phare",
-  nom: "Jersey Liquide",
-  titreItalique: "Jersey Liquide",
-  texte:
-    "Un foulard fluide, léger et élégant, pensé pour accompagner ton quotidien.",
-  cta: { label: "Voir toutes les couleurs", href: "/boutique" },
-  paletteTexte: "Une palette de couleurs pour chaque style.",
-};
+/** Lien vers la boutique filtrée sur une catégorie (nom exact en base). */
+export const lienCategorie = (categorie: string) =>
+  `/boutique?categorie=${encodeURIComponent(categorie)}`;
+
+/** Produits phares de l'accueil : ils défilent l'un après l'autre. */
+export const PRODUITS_PHARES = [
+  {
+    eyebrow: "Nos produits phares",
+    titreItalique: "Jersey Liquide",
+    texte:
+      "Un foulard fluide, léger et élégant, pensé pour accompagner ton quotidien.",
+    cta: { label: "Voir toutes les couleurs", href: lienCategorie("Jersey liquide") },
+    paletteTexte: "Une palette de couleurs pour chaque style.",
+    palette: ["#f3ece1", "#dcc6a8", "#e0c0b8", "#c99a94", "#a9808a", "#5b4038", "#2b2420"],
+  },
+  {
+    eyebrow: "Nos produits phares",
+    titreItalique: "Bamboo 95% coton",
+    texte:
+      "Un foulard doux et respirant, naturellement agréable à porter toute la journée.",
+    cta: { label: "Voir toutes les couleurs", href: lienCategorie("Bamboo 95% coton") },
+    paletteTexte: "Des teintes douces, du sable au bleu marine.",
+    palette: ["#f0e6d4", "#d8c3a3", "#e0c0b8", "#8a9b86", "#7c5866", "#3d4a63", "#5b4038"],
+  },
+];
 
 export const HERO_SLIDES: HeroSlide[] = [
   {
@@ -57,7 +84,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     texte:
       "Des foulards pensés pour sublimer chaque moment de ta vie, avec style et modestie.",
     image: "/images/hero/hero-1.jpg",
-    position: "right",
+    position: "right top",
     cta: { label: "Découvrir la boutique", href: "/boutique" },
   },
   {

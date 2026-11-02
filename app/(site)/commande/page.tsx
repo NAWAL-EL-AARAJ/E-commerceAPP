@@ -4,7 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "../../context/CartContext";
 import { supabase } from "../../lib/supabase";
-import { prixFormate, PLACEHOLDER_PRODUIT } from "../../lib/content";
+import {
+  fraisLivraison,
+  prixFormate,
+  PLACEHOLDER_PRODUIT,
+} from "../../lib/content";
 import Container from "../../components/ui/Container";
 import Photo from "../../components/ui/Photo";
 import { Button, ButtonLink } from "../../components/ui/Button";
@@ -36,6 +40,10 @@ export default function CommandePage() {
   const [erreur, setErreur] = useState("");
   const [telephoneConfirme, setTelephoneConfirme] = useState("");
 
+  // Les frais ne s'affichent qu'une fois la ville saisie.
+  const livraison = ville.trim() ? fraisLivraison(ville) : null;
+  const totalAPayer = total + (livraison ?? 0);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErreur("");
@@ -65,7 +73,7 @@ export default function CommandePage() {
       ville: ville.trim(),
       adresse: adresse.trim(),
       produits: cart,
-      total,
+      total: totalAPayer,
       statut: "en attente",
     });
 
@@ -263,10 +271,25 @@ export default function CommandePage() {
             })}
           </ul>
 
+          <div className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-sm text-espresso">
+            <div className="flex items-baseline justify-between">
+              <span className="text-taupe">Sous-total</span>
+              <span>{prixFormate(total)}</span>
+            </div>
+            <div className="flex items-baseline justify-between">
+              <span className="text-taupe">Livraison</span>
+              {livraison === null ? (
+                <span className="text-xs text-taupe">Saisis ta ville</span>
+              ) : (
+                <span>{prixFormate(livraison)}</span>
+              )}
+            </div>
+          </div>
+
           <div className="mt-4 flex items-baseline justify-between border-t border-line pt-4">
             <span className="eyebrow">Total</span>
             <span className="font-display text-2xl text-rosewood">
-              {prixFormate(total)}
+              {prixFormate(totalAPayer)}
             </span>
           </div>
         </aside>

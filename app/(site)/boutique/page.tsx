@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { supabase } from "../../lib/supabase";
 import type { Produit } from "../../lib/types";
@@ -35,7 +36,9 @@ export default async function BoutiquePage() {
 
       <section className="py-16">
         <Container>
-          <CatalogueFiltrable produits={(produits as Produit[]) ?? []} />
+          <Suspense>
+            <CatalogueFiltrable produits={(produits as Produit[]) ?? []} />
+          </Suspense>
         </Container>
       </section>
     </>

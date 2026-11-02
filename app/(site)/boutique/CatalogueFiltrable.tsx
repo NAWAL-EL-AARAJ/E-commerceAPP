@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Produit } from "../../lib/types";
 import ProductGrid from "../../components/product/ProductGrid";
 
@@ -15,7 +16,11 @@ export default function CatalogueFiltrable({
     return ["Tout", ...Array.from(set).sort()];
   }, [produits]);
 
-  const [actif, setActif] = useState("Tout");
+  // ?categorie=… (liens de l'accueil) présélectionne le filtre.
+  const demandee = useSearchParams().get("categorie");
+  const [actif, setActif] = useState(
+    demandee && categories.includes(demandee) ? demandee : "Tout",
+  );
 
   const filtres =
     actif === "Tout"
